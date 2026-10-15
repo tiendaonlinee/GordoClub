@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GORDO CLUB - Alfajores Artesanales</title>
-  <!-- Google Fonts & FontAwesome icons -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
@@ -115,10 +114,6 @@
       gap: 10px;
       border-bottom: 3px solid var(--yellow);
       padding-bottom: 5px;
-    }
-
-    .category-title i {
-      color: var(--green);
     }
 
     /* LISTA DE PRODUCTOS */
@@ -283,19 +278,13 @@
       border-bottom: 1px solid #F0F0F0;
     }
 
-    .qty-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .qty-btn {
+    .remove-btn {
       background: var(--gray-light);
       border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
+      padding: 5px 10px;
+      border-radius: 6px;
       font-weight: bold;
+      color: var(--red);
       cursor: pointer;
     }
 
@@ -333,11 +322,11 @@
     <h1>GORDO CLUB</h1>
     <div class="slogan">Alfajores Artesanales</div>
     <div class="schedule-badge">
-      <i class="fa-regular fa-clock"></i> Horarios: 10:00 a 12:00 hs | 17:00 a 21:00 hs
+      Horarios: 10:00 a 12:00 hs | 17:00 a 21:00 hs
     </div>
     <br>
     <div class="delivery-badge">
-      <i class="fa-solid fa-motorcycle"></i> Envíos a todo CDELU
+      Envíos a todo CDELU
     </div>
   </header>
 
@@ -346,31 +335,31 @@
 
     <!-- CATEGORÍA: PROMOCIONES -->
     <div class="category-title">
-      <i class="fa-solid fa-star"></i> Promociones Especiales
+      Promociones Especiales
     </div>
     <div class="product-grid" id="promociones"></div>
 
     <!-- CATEGORÍA: TRADICIONALES (GORDOS) -->
     <div class="category-title">
-      <i class="fa-solid fa-cookie"></i> Alfajores Gordos ($4.000)
+      Alfajores Gordos ($4.000)
     </div>
     <div class="product-grid" id="tradicionales"></div>
 
     <!-- CATEGORÍA: MISIL -->
     <div class="category-title">
-      <i class="fa-solid fa-bolt"></i> Misil ($4.000)
+      Misil ($4.000)
     </div>
     <div class="product-grid" id="misil"></div>
 
     <!-- CATEGORÍA: HABANO -->
     <div class="category-title">
-      <i class="fa-solid fa-candy-cane"></i> Habano ($4.000)
+      Habano ($4.000)
     </div>
     <div class="product-grid" id="habano"></div>
 
     <!-- CATEGORÍA: HELADOS -->
     <div class="category-title">
-      <i class="fa-solid fa-snowflake"></i> Alfajores Helados ($4.500)
+      Alfajores Helados ($4.500)
     </div>
     <div class="product-grid" id="helados"></div>
 
@@ -383,7 +372,7 @@
       <span class="cart-total" id="cart-total-text">$0</span>
     </div>
     <button class="btn-whatsapp" onclick="sendWhatsApp()">
-      <i class="fa-brands fa-whatsapp"></i> Pedir por WhatsApp
+      Pedir por WhatsApp
     </button>
   </div>
 
@@ -410,7 +399,7 @@
       </div>
       <div id="promo-modal-body"></div>
       <button class="btn-add" style="width: 100%; margin-top: 15px;" onclick="confirmPromoSelection()">
-        <i class="fa-solid fa-check"></i> Agregar Promo al Carrito
+        Agregar Promo al Carrito
       </button>
     </div>
   </div>
@@ -455,7 +444,7 @@
             <div class="product-price">$${prod.precio.toLocaleString('es-AR')}</div>
           </div>
           <button class="btn-add" onclick="${prod.isPromo ? `openPromoModal(${prod.id})` : `addSimpleToCart(${prod.id})`}">
-            <i class="fa-solid fa-plus"></i> ${prod.isPromo ? 'Armar y Agregar' : 'Agregar'}
+            ${prod.isPromo ? 'Armar y Agregar' : 'Agregar'}
           </button>
         `;
         document.getElementById(prod.cat).appendChild(card);
@@ -578,7 +567,7 @@
             ${item.detalles ? `<small style="color:#666;">${item.detalles}</small><br>` : ''}
             <small style="color: var(--green); font-weight: bold;">$${item.precio.toLocaleString('es-AR')}</small>
           </div>
-          <button class="qty-btn" onclick="removeFromCart(${index})"><i class="fa-solid fa-trash" style="color: var(--red);"></i></button>
+          <button class="remove-btn" onclick="removeFromCart(${index})">Eliminar</button>
         `;
         container.appendChild(itemEl);
       });
@@ -591,19 +580,19 @@
         return;
       }
 
-      let message = "¡Hola *GORDO CLUB*!  Quiero realizar el siguiente pedido:\n\n";
+      let message = "Hola GORDO CLUB! Quiero realizar el siguiente pedido:\n\n";
       let total = 0;
 
       cart.forEach((item, idx) => {
         total += item.precio;
-        message += `*${idx + 1}. ${item.nombre}* - $${item.precio.toLocaleString('es-AR')}\n`;
+        message += `${idx + 1}. ${item.nombre} - $${item.precio.toLocaleString('es-AR')}\n`;
         if (item.detalles) {
-          message += `   └ _${item.detalles}_\n`;
+          message += `   Detalle: ${item.detalles}\n`;
         }
       });
 
-      message += `\n*TOTAL:* $${total.toLocaleString('es-AR')}`;
-      message += `\n\n _Envío a domicilio en CDELU_`;
+      message += `\nTOTAL: $${total.toLocaleString('es-AR')}`;
+      message += `\n\nEnvío a domicilio en CDELU`;
 
       const encoded = encodeURIComponent(message);
       window.open(`https://wa.me/${PHONE_NUMBER}?text=${encoded}`, '_blank');
