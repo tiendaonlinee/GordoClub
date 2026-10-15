@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GORDO CLUB - Alfajores Artesanales</title>
+  <!-- Google Fonts & FontAwesome icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --red: #E52421;
+      --yellow: #F9BA15;
+      --green: #1C8244;
+      --cream: #FAF6ED;
+      --dark: #1E1E1E;
+      --gray-light: #F3EFE6;
+      --pink: #E85A8A;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--cream);
+      color: var(--dark);
+      padding-bottom: 120px;
+    }
+
+    /* HEADER */
+    header {
+      background: white;
+      text-align: center;
+      padding: 25px 15px 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border-bottom: 5px solid var(--yellow);
+      position: relative;
+    }
+
+    .logo-container {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: 4px solid var(--yellow);
+      background: #FAF6ED;
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      color: var(--red);
+      font-size: 2.2rem;
+      letter-spacing: 1px;
+    }
+
+    .slogan {
+      color: var(--green);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .schedule-badge {
+      display: inline-block;
+      background-color: #FFF3D1;
+      color: #8A6300;
+      border: 1px solid var(--yellow);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .delivery-badge {
+      display: inline-block;
+      background-color: #FFE6EE;
+      color: var(--pink);
+      border: 1px solid var(--pink);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    /* CATEGORÍAS */
+    .category-title {
+      font-family: 'Fredoka One', cursive;
+      color: var(--red);
+      font-size: 1.5rem;
+      margin: 30px 0 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 3px solid var(--yellow);
+      padding-bottom: 5px;
+    }
+
+    .category-title i {
+      color: var(--green);
+    }
+
+    /* LISTA DE PRODUCTOS */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 15px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    }
+
+    .product-card.promo-card {
+      border: 2px solid var(--pink);
+      background: #FFF9FC;
+    }
+
+    .product-info h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .product-price {
+      font-weight: 700;
+      color: var(--green);
+      font-size: 1.15rem;
+      margin-bottom: 15px;
+    }
+
+    .btn-add {
+      background-color: var(--red);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-add:hover {
+      background-color: #C11A18;
+    }
+
+    /* CARRITO FLOTANTE Y BARRA INFERIOR */
+    .cart-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 3px solid var(--green);
+      padding: 12px 20px;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .cart-summary {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-count {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .cart-total {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .btn-whatsapp {
+      background-color: #25D366;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+      text-decoration: none;
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #1EBE5D;
+    }
+
+    /* MODAL CARRITO DETALLE */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 450px;
+      padding: 20px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 2px solid var(--gray-light);
+      padding-bottom: 10px;
+    }
+
+    .close-btn {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #F0F0F0;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qty-btn {
+      background: var(--gray-light);
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ENCABEZADO -->
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="GORDO CLUB Logo" onerror="this.src='https://via.placeholder.com/150/FAF6ED/E52421?text=GORDO+CLUB'">
+    </div>
+    <h1>GORDO CLUB</h1>
+    <div class="slogan">Alfajores Artesanales</div>
+    <div class="schedule-badge">
+      <i class="fa-regular fa-clock"></i> Horarios: 10:00 a 12:00 hs | 17:00 a 21:00 hs
+    </div>
+    <br>
+    <div class="delivery-badge">
+      <i class="fa-solid fa-motorcycle"></i> Envíos a todo CDELU
+    </div>
+  </header>
+
+  <!-- SECCIÓN MENÚ -->
+  <div class="container">
+
+    <!-- CATEGORÍA: PROMOCIONES -->
+    <div class="category-title" style="color: var(--pink);">
+      <i class="fa-solid fa-fire" style="color: var(--pink);"></i> Promociones Especiales
+    </div>
+    <div class="product-grid" id="promociones"></div>
+
+    <!-- CATEGORÍA: TRADICIONALES -->
+    <div class="category-title">
+      <i class="fa-solid fa-cookie"></i> Alfajores Tradicionales ($4.000)
+    </div>
+    <div class="product-grid" id="tradicionales"></div>
+
+    <!-- CATEGORÍA: HELADOS -->
+    <div class="category-title">
+      <i class="fa-solid fa-snowflake"></i> Alfajores Helados ($4.500)
+    </div>
+    <div class="product-grid" id="helados"></div>
+
+  </div>
+
+  <!-- BARRA INFERIOR DE PEDIDO -->
+  <div class="cart-bar">
+    <div class="cart-summary" onclick="openCartModal()" style="cursor: pointer;">
+      <span class="cart-count" id="cart-count-text">0 productos seleccionados</span>
+      <span class="cart-total" id="cart-total-text">$0</span>
+    </div>
+    <button class="btn-whatsapp" onclick="sendWhatsApp()">
+      <i class="fa-brands fa-whatsapp"></i> Pedir por WhatsApp
+    </button>
+  </div>
+
+  <!-- MODAL CARRITO -->
+  <div class="modal" id="cart-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Tu Pedido</h2>
+        <span class="close-btn" onclick="closeCartModal()">&times;</span>
+      </div>
+      <div id="cart-items-container"></div>
+      <div style="margin-top: 15px; text-align: right; font-weight: bold; font-size: 1.2rem;">
+        Total: <span id="modal-total" style="color: var(--green);">$0</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DATOS DE LOS PRODUCTOS
+    const productos = [
+      // Promociones
+      { id: 101, nombre: 'Promo 4 Gordos', precio: 12000, cat: 'promociones', isPromo: true },
+      { id: 102, nombre: 'Promo 6 Gorditos', precio: 8000, cat: 'promociones', isPromo: true },
+      { id: 103, nombre: 'Promo Combo (2 Gordos + 1 Misil + 3 Gorditos)', precio: 12000, cat: 'promociones', isPromo: true },
+      { id: 104, nombre: 'Promo 6 Gordos', precio: 18000, cat: 'promociones', isPromo: true },
+
+      // Tradicionales
+      { id: 1, nombre: 'El Clásico', precio: 4000, cat: 'tradicionales' },
+      { id: 2, nombre: 'Ferrero', precio: 4000, cat: 'tradicionales' },
+      { id: 3, nombre: 'Bananita', precio: 4000, cat: 'tradicionales' },
+      { id: 4, nombre: 'Oreo', precio: 4000, cat: 'tradicionales' },
+      { id: 5, nombre: 'Bonobon', precio: 4000, cat: 'tradicionales' },
+      { id: 6, nombre: 'Kinder', precio: 4000, cat: 'tradicionales' },
+      { id: 7, nombre: 'Marroc', precio: 4000, cat: 'tradicionales' },
+      { id: 8, nombre: 'Cadbury', precio: 4000, cat: 'tradicionales' },
+
+      // Helados
+      { id: 9, nombre: 'Lemon Pie', precio: 4500, cat: 'helados' },
+      { id: 10, nombre: 'Chocotorta', precio: 4500, cat: 'helados' },
+      { id: 11, nombre: 'Cheesecake', precio: 4500, cat: 'helados' },
+      { id: 12, nombre: 'Torta Oreo', precio: 4500, cat: 'helados' }
+    ];
+
+    // NÚMERO DE WHATSAPP (Ajustar por el número del negocio)
+    const PHONE_NUMBER = "5493442000000"; 
+
+    let cart = {};
+
+    // CARGAR PRODUCTOS EN LA PÁGINA
+    function renderProducts() {
+      productos.forEach(prod => {
+        const card = document.createElement('div');
+        card.className = `product-card ${prod.isPromo ? 'promo-card' : ''}`;
+        card.innerHTML = `
+          <div class="product-info">
+            <h3>${prod.nombre}</h3>
+            <div class="product-price">$${prod.precio.toLocaleString('es-AR')}</div>
+          </div>
+          <button class="btn-add" onclick="addToCart(${prod.id})">
+            <i class="fa-solid fa-plus"></i> Agregar
+          </button>
+        `;
+        document.getElementById(prod.cat).appendChild(card);
+      });
+    }
+
+    // MANEJO DEL CARRITO
+    function addToCart(id) {
+      if (cart[id]) {
+        cart[id]++;
+      } else {
+        cart[id] = 1;
+      }
+      updateCartUI();
+    }
+
+    function changeQty(id, delta) {
+      if (cart[id]) {
+        cart[id] += delta;
+        if (cart[id] <= 0) delete cart[id];
+      }
+      updateCartUI();
+      renderCartModal();
+    }
+
+    function updateCartUI() {
+      let totalCount = 0;
+      let totalPrice = 0;
+
+      for (let id in cart) {
+        const count = cart[id];
+        const prod = productos.find(p => p.id == id);
+        totalCount += count;
+        totalPrice += prod.precio * count;
+      }
+
+      document.getElementById('cart-count-text').innerText = `${totalCount} producto${totalCount !== 1 ? 's' : ''} seleccionado${totalCount !== 1 ? 's' : ''}`;
+      document.getElementById('cart-total-text').innerText = `$${totalPrice.toLocaleString('es-AR')}`;
+      document.getElementById('modal-total').innerText = `$${totalPrice.toLocaleString('es-AR')}`;
+    }
+
+    // MODAL
+    function openCartModal() {
+      renderCartModal();
+      document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function closeCartModal() {
+      document.getElementById('cart-modal').style.display = 'none';
+    }
+
+    function renderCartModal() {
+      const container = document.getElementById('cart-items-container');
+      container.innerHTML = '';
+
+      if (Object.keys(cart).length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#888;">El carrito está vacío.</p>';
+        return;
+      }
+
+      for (let id in cart) {
+        const prod = productos.find(p => p.id == id);
+        const qty = cart[id];
+        const itemEl = document.createElement('div');
+        itemEl.className = 'cart-item';
+        itemEl.innerHTML = `
+          <div>
+            <strong>${prod.nombre}</strong><br>
+            <small>$${prod.precio.toLocaleString('es-AR')} c/u</small>
+          </div>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty(${id}, -1)">-</button>
+            <span>${qty}</span>
+            <button class="qty-btn" onclick="changeQty(${id}, 1)">+</button>
+          </div>
+        `;
+        container.appendChild(itemEl);
+      }
+    }
+
+    // ENVIAR A WHATSAPP
+    function sendWhatsApp() {
+      if (Object.keys(cart).length === 0) {
+        alert("Por favor, agregá al menos un producto al carrito para realizar el pedido.");
+        return;
+      }
+
+      let message = "¡Hola *GORDO CLUB*! 🍋🍩 Quiero realizar el siguiente pedido:\n\n";
+      let total = 0;
+
+      for (let id in cart) {
+        const prod = productos.find(p => p.id == id);
+        const qty = cart[id];
+        const subtotal = prod.precio * qty;
+        total += subtotal;
+        message += `• *${qty}x* ${prod.nombre} - $${subtotal.toLocaleString('es-AR')}\n`;
+      }
+
+      message += `\n*TOTAL:* $${total.toLocaleString('es-AR')}`;
+      message += `\n\n🛵 _Envío a domicilio en CDELU_`;
+
+      const encoded = encodeURIComponent(message);
+      window.open(`https://wa.me/${PHONE_NUMBER}?text=${encoded}`, '_blank');
+    }
+
+    // INICIALIZAR
+    renderProducts();
+  </script>
+</body>
+</html>
