@@ -230,7 +230,7 @@
       background-color: #1EBE5D;
     }
 
-    /* MODAL CARRITO & SELECCION PROMOS */
+    /* MODALES */
     .modal {
       display: none;
       position: fixed;
@@ -288,27 +288,29 @@
       cursor: pointer;
     }
 
-    .flavor-selector-group {
+    .flavor-selector-group, .form-group {
       margin-bottom: 15px;
       background: var(--cream);
       padding: 12px;
       border-radius: 12px;
     }
 
-    .flavor-selector-group label {
+    .flavor-selector-group label, .form-group label {
       font-weight: 700;
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       color: var(--red);
+      font-size: 0.9rem;
     }
 
-    select {
+    select, input[type="text"] {
       width: 100%;
-      padding: 8px 12px;
+      padding: 10px 12px;
       border-radius: 8px;
       border: 1px solid #ccc;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       font-weight: 500;
+      font-size: 0.95rem;
     }
   </style>
 </head>
@@ -371,12 +373,12 @@
       <span class="cart-count" id="cart-count-text">0 productos seleccionados</span>
       <span class="cart-total" id="cart-total-text">$0</span>
     </div>
-    <button class="btn-whatsapp" onclick="sendWhatsApp()">
+    <button class="btn-whatsapp" onclick="openCheckoutModal()">
       Pedir por WhatsApp
     </button>
   </div>
 
-  <!-- MODAL CARRITO -->
+  <!-- MODAL CARRITO DETALLE -->
   <div class="modal" id="cart-modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -387,6 +389,37 @@
       <div style="margin-top: 15px; text-align: right; font-weight: bold; font-size: 1.2rem;">
         Total: <span id="modal-total" style="color: var(--green);">$0</span>
       </div>
+      <button class="btn-add" style="width: 100%; margin-top: 15px;" onclick="closeCartModal(); openCheckoutModal();">
+        Continuar con el Pedido
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL FORMULARIO DE ENVÍO -->
+  <div class="modal" id="checkout-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Datos para el Envío</h2>
+        <span class="close-btn" onclick="closeCheckoutModal()">&times;</span>
+      </div>
+      
+      <div class="form-group">
+        <label for="client-name">Nombre y Apellido *</label>
+        <input type="text" id="client-name" placeholder="Ej: María González">
+
+        <label for="client-address">Dirección de Entrega *</label>
+        <input type="text" id="client-address" placeholder="Ej: San Martín 1234, Dpto 2B">
+
+        <label for="payment-method">Método de Pago *</label>
+        <select id="payment-method">
+          <option value="Efectivo">Efectivo</option>
+          <option value="Transferencia / Mercado Pago">Transferencia / Mercado Pago</option>
+        </select>
+      </div>
+
+      <button class="btn-whatsapp" style="width: 100%; justify-content: center; border-radius: 12px;" onclick="sendWhatsApp()">
+        Confirmar y Enviar a WhatsApp
+      </button>
     </div>
   </div>
 
@@ -573,14 +606,36 @@
       });
     }
 
+    /* MODAL CHECKOUT / FORMULARIO */
+    function openCheckoutModal() {
+      if (cart.length === 0) {
+        alert("Agregá al menos un producto al carrito para continuar.");
+        return;
+      }
+      document.getElementById('checkout-modal').style.display = 'flex';
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkout-modal').style.display = 'none';
+    }
+
     // WHATSAPP
     function sendWhatsApp() {
-      if (cart.length === 0) {
-        alert("Agregá al menos un producto al carrito para realizar el pedido.");
+      const name = document.getElementById('client-name').value.trim();
+      const address = document.getElementById('client-address').value.trim();
+      const paymentMethod = document.getElementById('payment-method').value;
+
+      if (!name) {
+        alert("Por favor, ingresá tu Nombre y Apellido.");
         return;
       }
 
-      let message = "Hola GORDO CLUB! Quiero realizar el siguiente pedido:\n\n";
+      if (!address) {
+        alert("Por favor, ingresá la Dirección de entrega.");
+        return;
+      }
+
+      let message = "Hola GORDO CLUB! Quiero realizar el siguiente pedido con envío:\n\n";
       let total = 0;
 
       cart.forEach((item, idx) => {
@@ -591,8 +646,12 @@
         }
       });
 
-      message += `\nTOTAL: $${total.toLocaleString('es-AR')}`;
-      message += `\n\nEnvío a domicilio en CDELU`;
+      message += `\nTOTAL: $${total.toLocaleString('es-AR')}\n`;
+      message += `------------------------------\n`;
+      message += `DATOS PARA EL ENVÍO:\n`;
+      message += `- Nombre: ${name}\n`;
+      message += `- Dirección: ${address}\n`;
+      message += `- Método de pago: ${paymentMethod}\n`;
 
       const encoded = encodeURIComponent(message);
       window.open(`https://wa.me/${PHONE_NUMBER}?text=${encoded}`, '_blank');
