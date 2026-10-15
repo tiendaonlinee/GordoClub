@@ -16,7 +16,6 @@
       --cream: #FAF6ED;
       --dark: #1E1E1E;
       --gray-light: #F3EFE6;
-      --pink: #E85A8A;
     }
 
     * {
@@ -89,9 +88,9 @@
 
     .delivery-badge {
       display: inline-block;
-      background-color: #FFE6EE;
-      color: var(--pink);
-      border: 1px solid var(--pink);
+      background-color: #E8F5E9;
+      color: var(--green);
+      border: 1px solid var(--green);
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 0.8rem;
@@ -147,8 +146,8 @@
     }
 
     .product-card.promo-card {
-      border: 2px solid var(--pink);
-      background: #FFF9FC;
+      border: 2px solid var(--yellow);
+      background: #FFFDF5;
     }
 
     .product-info h3 {
@@ -191,7 +190,7 @@
       left: 0;
       right: 0;
       background: white;
-      border-top: 3px solid var(--green);
+      border-top: 4px solid var(--red);
       padding: 12px 20px;
       box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
       display: flex;
@@ -236,7 +235,7 @@
       background-color: #1EBE5D;
     }
 
-    /* MODAL CARRITO DETALLE */
+    /* MODAL CARRITO & SELECCION PROMOS */
     .modal {
       display: none;
       position: fixed;
@@ -256,7 +255,7 @@
       width: 90%;
       max-width: 450px;
       padding: 20px;
-      max-height: 80vh;
+      max-height: 85vh;
       overflow-y: auto;
     }
 
@@ -299,6 +298,29 @@
       font-weight: bold;
       cursor: pointer;
     }
+
+    .flavor-selector-group {
+      margin-bottom: 15px;
+      background: var(--cream);
+      padding: 12px;
+      border-radius: 12px;
+    }
+
+    .flavor-selector-group label {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 8px;
+      color: var(--red);
+    }
+
+    select {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
@@ -323,16 +345,28 @@
   <div class="container">
 
     <!-- CATEGORÍA: PROMOCIONES -->
-    <div class="category-title" style="color: var(--pink);">
-      <i class="fa-solid fa-fire" style="color: var(--pink);"></i> Promociones Especiales
+    <div class="category-title">
+      <i class="fa-solid fa-star"></i> Promociones Especiales
     </div>
     <div class="product-grid" id="promociones"></div>
 
-    <!-- CATEGORÍA: TRADICIONALES -->
+    <!-- CATEGORÍA: TRADICIONALES (GORDOS) -->
     <div class="category-title">
-      <i class="fa-solid fa-cookie"></i> Alfajores Tradicionales ($4.000)
+      <i class="fa-solid fa-cookie"></i> Alfajores Gordos ($4.000)
     </div>
     <div class="product-grid" id="tradicionales"></div>
+
+    <!-- CATEGORÍA: MISIL -->
+    <div class="category-title">
+      <i class="fa-solid fa-bolt"></i> Misil ($4.000)
+    </div>
+    <div class="product-grid" id="misil"></div>
+
+    <!-- CATEGORÍA: HABANO -->
+    <div class="category-title">
+      <i class="fa-solid fa-candy-cane"></i> Habano ($4.000)
+    </div>
+    <div class="product-grid" id="habano"></div>
 
     <!-- CATEGORÍA: HELADOS -->
     <div class="category-title">
@@ -367,38 +401,50 @@
     </div>
   </div>
 
+  <!-- MODAL CONFIGURACIÓN PROMO -->
+  <div class="modal" id="promo-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="promo-modal-title">Elegí tus sabores</h2>
+        <span class="close-btn" onclick="closePromoModal()">&times;</span>
+      </div>
+      <div id="promo-modal-body"></div>
+      <button class="btn-add" style="width: 100%; margin-top: 15px;" onclick="confirmPromoSelection()">
+        <i class="fa-solid fa-check"></i> Agregar Promo al Carrito
+      </button>
+    </div>
+  </div>
+
   <script>
-    // DATOS DE LOS PRODUCTOS
+    // SABORES Y PRODUCTOS
+    const saboresGordos = ['El Clásico', 'Ferrero', 'Bananita', 'Oreo', 'Bonobon', 'Kinder', 'Marroc', 'Cadbury'];
+    const saboresMisil = ['Tiramisú', 'Rogel', 'Tarta de Coco'];
+    const saboresHabano = ['Dulce de Leche', 'Nutella', 'Crema Bariloche', 'Tiramisú'];
+    const saboresHelados = ['Lemon Pie', 'Chocotorta', 'Cheesecake', 'Torta Oreo'];
+
     const productos = [
       // Promociones
-      { id: 101, nombre: 'Promo 4 Gordos', precio: 12000, cat: 'promociones', isPromo: true },
-      { id: 102, nombre: 'Promo 6 Gorditos', precio: 8000, cat: 'promociones', isPromo: true },
-      { id: 103, nombre: 'Promo Combo (2 Gordos + 1 Misil + 3 Gorditos)', precio: 12000, cat: 'promociones', isPromo: true },
-      { id: 104, nombre: 'Promo 6 Gordos', precio: 18000, cat: 'promociones', isPromo: true },
+      { id: 101, nombre: 'Promo 4 Gordos', precio: 12000, cat: 'promociones', isPromo: true, reqGordos: 4, reqMisil: 0 },
+      { id: 103, nombre: 'Promo Combo (2 Gordos + 1 Misil + 3 Gorditos)', precio: 12000, cat: 'promociones', isPromo: true, reqGordos: 2, reqMisil: 1 },
+      { id: 104, nombre: 'Promo 6 Gordos', precio: 18000, cat: 'promociones', isPromo: true, reqGordos: 6, reqMisil: 0 },
 
-      // Tradicionales
-      { id: 1, nombre: 'El Clásico', precio: 4000, cat: 'tradicionales' },
-      { id: 2, nombre: 'Ferrero', precio: 4000, cat: 'tradicionales' },
-      { id: 3, nombre: 'Bananita', precio: 4000, cat: 'tradicionales' },
-      { id: 4, nombre: 'Oreo', precio: 4000, cat: 'tradicionales' },
-      { id: 5, nombre: 'Bonobon', precio: 4000, cat: 'tradicionales' },
-      { id: 6, nombre: 'Kinder', precio: 4000, cat: 'tradicionales' },
-      { id: 7, nombre: 'Marroc', precio: 4000, cat: 'tradicionales' },
-      { id: 8, nombre: 'Cadbury', precio: 4000, cat: 'tradicionales' },
+      // Gordos
+      ...saboresGordos.map((s, idx) => ({ id: 10 + idx, nombre: s, precio: 4000, cat: 'tradicionales' })),
+
+      // Misil
+      ...saboresMisil.map((s, idx) => ({ id: 30 + idx, nombre: s, precio: 4000, cat: 'misil' })),
+
+      // Habano
+      ...saboresHabano.map((s, idx) => ({ id: 50 + idx, nombre: s, precio: 4000, cat: 'habano' })),
 
       // Helados
-      { id: 9, nombre: 'Lemon Pie', precio: 4500, cat: 'helados' },
-      { id: 10, nombre: 'Chocotorta', precio: 4500, cat: 'helados' },
-      { id: 11, nombre: 'Cheesecake', precio: 4500, cat: 'helados' },
-      { id: 12, nombre: 'Torta Oreo', precio: 4500, cat: 'helados' }
+      ...saboresHelados.map((s, idx) => ({ id: 70 + idx, nombre: s, precio: 4500, cat: 'helados' }))
     ];
 
-    // NÚMERO DE WHATSAPP (Ajustar por el número del negocio)
     const PHONE_NUMBER = "5493442000000"; 
+    let cart = [];
+    let currentPromo = null;
 
-    let cart = {};
-
-    // CARGAR PRODUCTOS EN LA PÁGINA
     function renderProducts() {
       productos.forEach(prod => {
         const card = document.createElement('div');
@@ -408,50 +454,103 @@
             <h3>${prod.nombre}</h3>
             <div class="product-price">$${prod.precio.toLocaleString('es-AR')}</div>
           </div>
-          <button class="btn-add" onclick="addToCart(${prod.id})">
-            <i class="fa-solid fa-plus"></i> Agregar
+          <button class="btn-add" onclick="${prod.isPromo ? `openPromoModal(${prod.id})` : `addSimpleToCart(${prod.id})`}">
+            <i class="fa-solid fa-plus"></i> ${prod.isPromo ? 'Armar y Agregar' : 'Agregar'}
           </button>
         `;
         document.getElementById(prod.cat).appendChild(card);
       });
     }
 
-    // MANEJO DEL CARRITO
-    function addToCart(id) {
-      if (cart[id]) {
-        cart[id]++;
-      } else {
-        cart[id] = 1;
-      }
+    // AGREGAR SIMPLES
+    function addSimpleToCart(id) {
+      const prod = productos.find(p => p.id === id);
+      cart.push({
+        id: prod.id,
+        nombre: prod.nombre,
+        precio: prod.precio,
+        detalles: null
+      });
       updateCartUI();
     }
 
-    function changeQty(id, delta) {
-      if (cart[id]) {
-        cart[id] += delta;
-        if (cart[id] <= 0) delete cart[id];
+    // CONFIGURACIÓN DE PROMOS
+    function openPromoModal(id) {
+      currentPromo = productos.find(p => p.id === id);
+      document.getElementById('promo-modal-title').innerText = currentPromo.nombre;
+      const body = document.getElementById('promo-modal-body');
+      body.innerHTML = '';
+
+      // Opciones Gordos
+      if (currentPromo.reqGordos > 0) {
+        const group = document.createElement('div');
+        group.className = 'flavor-selector-group';
+        group.innerHTML = `<label>Elegí ${currentPromo.reqGordos} sabor(es) de Alfajor Gordo:</label>`;
+        for (let i = 0; i < currentPromo.reqGordos; i++) {
+          let select = `<select class="select-gordo">`;
+          saboresGordos.forEach(s => select += `<option value="${s}">${s}</option>`);
+          select += `</select>`;
+          group.innerHTML += select;
+        }
+        body.appendChild(group);
       }
-      updateCartUI();
-      renderCartModal();
+
+      // Opciones Misil
+      if (currentPromo.reqMisil > 0) {
+        const group = document.createElement('div');
+        group.className = 'flavor-selector-group';
+        group.innerHTML = `<label>Elegí ${currentPromo.reqMisil} sabor(es) de Misil:</label>`;
+        for (let i = 0; i < currentPromo.reqMisil; i++) {
+          let select = `<select class="select-misil">`;
+          saboresMisil.forEach(s => select += `<option value="${s}">${s}</option>`);
+          select += `</select>`;
+          group.innerHTML += select;
+        }
+        body.appendChild(group);
+      }
+
+      document.getElementById('promo-modal').style.display = 'flex';
     }
 
+    function closePromoModal() {
+      document.getElementById('promo-modal').style.display = 'none';
+    }
+
+    function confirmPromoSelection() {
+      const selectedGordos = Array.from(document.querySelectorAll('.select-gordo')).map(s => s.value);
+      const selectedMisiles = Array.from(document.querySelectorAll('.select-misil')).map(s => s.value);
+
+      let detalleTexto = [];
+      if (selectedGordos.length > 0) detalleTexto.push(`Gordos: ${selectedGordos.join(', ')}`);
+      if (selectedMisiles.length > 0) detalleTexto.push(`Misil: ${selectedMisiles.join(', ')}`);
+
+      cart.push({
+        id: currentPromo.id,
+        nombre: currentPromo.nombre,
+        precio: currentPromo.precio,
+        detalles: detalleTexto.join(' | ')
+      });
+
+      closePromoModal();
+      updateCartUI();
+    }
+
+    // CARRITO UI
     function updateCartUI() {
-      let totalCount = 0;
-      let totalPrice = 0;
-
-      for (let id in cart) {
-        const count = cart[id];
-        const prod = productos.find(p => p.id == id);
-        totalCount += count;
-        totalPrice += prod.precio * count;
-      }
+      let totalCount = cart.length;
+      let totalPrice = cart.reduce((sum, item) => sum + item.precio, 0);
 
       document.getElementById('cart-count-text').innerText = `${totalCount} producto${totalCount !== 1 ? 's' : ''} seleccionado${totalCount !== 1 ? 's' : ''}`;
       document.getElementById('cart-total-text').innerText = `$${totalPrice.toLocaleString('es-AR')}`;
       document.getElementById('modal-total').innerText = `$${totalPrice.toLocaleString('es-AR')}`;
     }
 
-    // MODAL
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+      renderCartModal();
+    }
+
     function openCartModal() {
       renderCartModal();
       document.getElementById('cart-modal').style.display = 'flex';
@@ -465,48 +564,43 @@
       const container = document.getElementById('cart-items-container');
       container.innerHTML = '';
 
-      if (Object.keys(cart).length === 0) {
+      if (cart.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#888;">El carrito está vacío.</p>';
         return;
       }
 
-      for (let id in cart) {
-        const prod = productos.find(p => p.id == id);
-        const qty = cart[id];
+      cart.forEach((item, index) => {
         const itemEl = document.createElement('div');
         itemEl.className = 'cart-item';
         itemEl.innerHTML = `
           <div>
-            <strong>${prod.nombre}</strong><br>
-            <small>$${prod.precio.toLocaleString('es-AR')} c/u</small>
+            <strong>${item.nombre}</strong><br>
+            ${item.detalles ? `<small style="color:#666;">${item.detalles}</small><br>` : ''}
+            <small style="color: var(--green); font-weight: bold;">$${item.precio.toLocaleString('es-AR')}</small>
           </div>
-          <div class="qty-controls">
-            <button class="qty-btn" onclick="changeQty(${id}, -1)">-</button>
-            <span>${qty}</span>
-            <button class="qty-btn" onclick="changeQty(${id}, 1)">+</button>
-          </div>
+          <button class="qty-btn" onclick="removeFromCart(${index})"><i class="fa-solid fa-trash" style="color: var(--red);"></i></button>
         `;
         container.appendChild(itemEl);
-      }
+      });
     }
 
-    // ENVIAR A WHATSAPP
+    // WHATSAPP
     function sendWhatsApp() {
-      if (Object.keys(cart).length === 0) {
-        alert("Por favor, agregá al menos un producto al carrito para realizar el pedido.");
+      if (cart.length === 0) {
+        alert("Agregá al menos un producto al carrito para realizar el pedido.");
         return;
       }
 
       let message = "¡Hola *GORDO CLUB*! 🍋🍩 Quiero realizar el siguiente pedido:\n\n";
       let total = 0;
 
-      for (let id in cart) {
-        const prod = productos.find(p => p.id == id);
-        const qty = cart[id];
-        const subtotal = prod.precio * qty;
-        total += subtotal;
-        message += `• *${qty}x* ${prod.nombre} - $${subtotal.toLocaleString('es-AR')}\n`;
-      }
+      cart.forEach((item, idx) => {
+        total += item.precio;
+        message += `*${idx + 1}. ${item.nombre}* - $${item.precio.toLocaleString('es-AR')}\n`;
+        if (item.detalles) {
+          message += `   └ _${item.detalles}_\n`;
+        }
+      });
 
       message += `\n*TOTAL:* $${total.toLocaleString('es-AR')}`;
       message += `\n\n🛵 _Envío a domicilio en CDELU_`;
@@ -515,7 +609,6 @@
       window.open(`https://wa.me/${PHONE_NUMBER}?text=${encoded}`, '_blank');
     }
 
-    // INICIALIZAR
     renderProducts();
   </script>
 </body>
