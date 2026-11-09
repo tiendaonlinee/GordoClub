@@ -322,7 +322,7 @@
       <img src="logo.png" alt="GORDO CLUB Logo" onerror="this.src='https://via.placeholder.com/150/FAF6ED/E52421?text=GORDO+CLUB'">
     </div>
     <h1>GORDO CLUB</h1>
-    <div class="slogan">Alfajores Artesanales</div>
+    <div class="slogan">Bienvenidos al Club sin Culpa</div>
     <div class="schedule-badge">
       Horarios: 10:00 a 12:00 hs | 17:00 a 21:00 hs
     </div>
@@ -438,8 +438,22 @@
   </div>
 
   <script>
-    // SABORES Y PRODUCTOS
-    const saboresGordos = ['El Clásico', 'Ferrero', 'Bananita', 'Oreo', 'Bonobon', 'Kinder', 'Marroc', 'Cadbury'];
+    // 12 SABORES OFICIALES SEGÚN LA CARTA
+    const saboresGordos = [
+      '01. Clásico',
+      '02. Oreo',
+      '03. Ferrero',
+      '04. Cadbury',
+      '05. Marroc',
+      '06. Campeón',
+      '07. Bananita',
+      '08. Kinder',
+      '09. Bonobon',
+      '10. Granizado',
+      '11. Mentita',
+      '12. Tita'
+    ];
+
     const saboresMisil = ['Tiramisú', 'Rogel', 'Tarta de Coco'];
     const saboresHabano = ['Dulce de Leche', 'Nutella', 'Crema Bariloche', 'Tiramisú'];
     const saboresHelados = ['Lemon Pie', 'Chocotorta', 'Cheesecake', 'Torta Oreo'];
@@ -463,7 +477,8 @@
       ...saboresHelados.map((s, idx) => ({ id: 70 + idx, nombre: s, precio: 4500, cat: 'helados' }))
     ];
 
-    const PHONE_NUMBER = "5493442000000"; 
+    // NUMERO DE WHATSAPP OFICIAL
+    const PHONE_NUMBER = "5493445455759"; 
     let cart = [];
     let currentPromo = null;
 
